@@ -56,9 +56,12 @@ export default {
           email: this.email,
           password: this.password,
         };
-        this.login(credentials).then((res) => {
+        this.$store.dispatch('login',credentials).then((res) => {
           this.$router.push('/dashboard')
-        });
+        })
+        .catch(err => {
+          console.log(err)
+        })
       }
     },
   },

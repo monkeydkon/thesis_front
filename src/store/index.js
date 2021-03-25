@@ -31,7 +31,6 @@ export default new Vuex.Store({
           },
           {
             id: 4,
-            
             name: 'Student Studentopoulos',
             email: 'test@mail.com',
           },
