@@ -5,11 +5,12 @@
       outlined
       color="primary"
       @click="newPostDialog = true"
+      v-if="$store.getters.role.name == 'student'"
       >Create a post</v-btn
     >
-    <div v-if="selectedClass.studentPosts.length > 0">
+    <div v-if="selectedClass.student_posts.length > 0">
       <div
-        v-for="post in selectedClass.studentPosts"
+        v-for="post in selectedClass.student_posts"
         :key="post.id"
         class="mt-5"
       >
@@ -37,7 +38,7 @@ export default {
   },
   computed: {
     selectedClass() {
-      return this.$store.state.classes.find(
+      return this.$store.state.course.classes.find(
         (c) => c.id == this.$route.params.id
       );
     },

@@ -12,7 +12,7 @@
       </v-card-title>
       <v-card-text>
         <div class="d-flex flex-column">
-          <p>{{ post.body }}</p>
+          <p>{{ post.content }}</p>
 
           <p v-if="student" class="mb-0">
               written by:

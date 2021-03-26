@@ -5,7 +5,7 @@
         <h1 class="secondary--text">{{ selectedClass.name }}</h1>
         <p class="mb-0 secondary--text">
           <span class="caption">by</span>
-          {{ selectedClass.teacher }}
+          {{ selectedClass.teacher.firstName + ' ' + selectedClass.teacher.lastName }}
         </p>
       </div>
 
@@ -59,7 +59,7 @@ export default {
   },
   computed: {
     selectedClass() {
-      return this.$store.state.classes.find(
+      return this.$store.state.course.classes.find(
         (c) => c.id == this.$route.params.id
       );
     },

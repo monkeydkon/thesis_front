@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+import store from '@/store'
 Vue.use(VueRouter)
 
 const originalPush = VueRouter.prototype.push;
@@ -14,11 +14,39 @@ VueRouter.prototype.push = function push(location) {
   });
 };
 
+const ifNotAuthenticated = (to, from, next) => {
+  if (!store.getters.isLoggedIn) {
+    next()
+    return
+  }
+  next('/')
+}
+
+const ifAuthenticated = (to, from, next) => {
+  if (store.getters.isLoggedIn) {
+    next()
+    return
+  }
+  next('/login')
+}
+
+
 const routes = [
+  {
+    path: '/',
+    beforeEnter: (to, from, next) => {
+      if(store.getters.isLoggedIn){
+        next('/dashboard')
+      }else{
+        next('/login')
+      }
+    }
+  },
   {
     name: 'auth',
     path: '/',
     component: () => import('@/views/Auth'),
+    beforeEnter: ifNotAuthenticated,
     children: [
       {
         name: 'login',
@@ -37,6 +65,7 @@ const routes = [
     name: 'main',
     path: '/',
     component: () => import('@/views/Main'),
+    beforeEnter: ifAuthenticated,
     children: [
       {
         name: 'dashboard',

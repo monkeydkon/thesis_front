@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card width="600" outlined elevation="3">
-      <v-data-table :headers="headers" :items="selectedClass.files">
+      <v-data-table :headers="headers" :items="selectedClass.material">
         <template v-slot:[`item.download`]="{ item }">
             <v-btn icon @click="download(item)">
                 <v-icon>mdi-download</v-icon>
@@ -35,7 +35,7 @@ export default {
   },
   computed: {
     selectedClass() {
-      return this.$store.state.classes.find(
+      return this.$store.state.course.classes.find(
         (c) => c.id == this.$route.params.id
       );
     },

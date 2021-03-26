@@ -28,10 +28,15 @@
         width="300"
         height="30"
         type="submit"
-        >das</v-btn
+        :loading="loading"
+        >Submit</v-btn
       >
 
-      <a class="text-decoration-underline mt-12 caption" @click="$router.push('/forgot')">I forgot my password</a>
+      <a
+        class="text-decoration-underline mt-12 caption"
+        @click="$router.push('/forgot')"
+        >I forgot my password</a
+      >
     </v-form>
   </div>
 </template>
@@ -39,11 +44,18 @@
 <script>
 import { required, email } from "vuelidate/lib/validators";
 import { mapActions } from "vuex";
+
+const loginFail = function () {
+  return !this.loginFailed;
+};
+
 export default {
   data() {
     return {
       email: null,
       password: null,
+      loading: false,
+      loginFailed: false,
     };
   },
 
@@ -52,16 +64,22 @@ export default {
     submit() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
+        this.loading = true;
         const credentials = {
           email: this.email,
           password: this.password,
         };
-        this.$store.dispatch('login',credentials).then((res) => {
-          this.$router.push('/dashboard')
-        })
-        .catch(err => {
-          console.log(err)
-        })
+        this.$store
+          .dispatch("login", credentials)
+          .then((res) => {
+            this.loading = false;
+            this.$router.push("/dashboard");
+          })
+          .catch((err) => {
+            this.loginFailed = true;
+            this.loading = false;
+            console.log(err);
+          });
       }
     },
   },
@@ -72,20 +90,31 @@ export default {
       if (!this.$v.email.$dirty) return errors;
       if (!this.$v.email.required) errors.push("Required field");
       if (!this.$v.email.email) errors.push("Invalid email address");
+      if (!this.$v.email.loginFail) errors.push("");
       return errors;
     },
     passwordErrors() {
       const errors = [];
       if (!this.$v.password.$dirty) return errors;
       if (!this.$v.password.required) errors.push("Required field");
+      if (!this.$v.password.loginFail) errors.push("Wrong credentials");
       return errors;
     },
   },
 
   validations: {
-    email: { required, email },
-    password: { required },
+    email: { required, email, loginFail },
+    password: { required, loginFail },
   },
+
+  watch: {
+    email(val){
+      this.loginFailed = false
+    },
+    password(val){
+      this.loginFailed = false
+    }
+  }
 };
 </script>
 

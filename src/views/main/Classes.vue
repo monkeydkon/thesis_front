@@ -5,7 +5,7 @@
         <v-btn
           text
           :class="$route.params.id == c.id ? 'primary--text' : 'white--text'"
-          v-for="c in $store.state.classes"
+          v-for="c in $store.state.course.classes"
           :key="c.id"
           @click="selectClass(c.id)"
           >{{ c.name }}</v-btn
