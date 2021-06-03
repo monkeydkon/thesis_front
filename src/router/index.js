@@ -6,13 +6,6 @@ Vue.use(VueRouter)
 const originalPush = VueRouter.prototype.push;
 
 
-VueRouter.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch((err) => {
-    if (err.name != "NavigationDuplicated") {
-      throw err;
-    }
-  });
-};
 
 const ifNotAuthenticated = (to, from, next) => {
   if (!store.getters.isLoggedIn) {
@@ -30,14 +23,22 @@ const ifAuthenticated = (to, from, next) => {
   next('/login')
 }
 
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch((err) => {
+    if (err.name != "NavigationDuplicated") {
+      throw err;
+    }
+  });
+};
+
 
 const routes = [
   {
     path: '/',
     beforeEnter: (to, from, next) => {
-      if(store.getters.isLoggedIn){
+      if (store.getters.isLoggedIn) {
         next('/dashboard')
-      }else{
+      } else {
         next('/login')
       }
     }
@@ -57,6 +58,11 @@ const routes = [
         name: 'forgot',
         path: 'forgot',
         component: () => import('@/views/auth/Forgot')
+      },
+      {
+        name: 'register',
+        path: 'register',
+        component: () => import('@/views/auth/Register')
       }
     ]
   },
@@ -74,28 +80,38 @@ const routes = [
       },
       {
         name: 'classes',
-        path: 'classes/:id',
+        path: 'classes',
         component: () => import('@/views/main/Classes'),
         children: [
           {
             name: 'posts',
-            path: 'posts',
+            path: ':id/posts',
             component: () => import('@/views/main/classes/Posts')
           },
           {
             name: 'studentPosts',
-            path: 'studentPosts',
-            component: () => import ('@/views/main/classes/StudentPosts')
+            path: ':id/studentPosts',
+            component: () => import('@/views/main/classes/StudentPosts')
           },
           {
             name: 'members',
-            path: 'members',
+            path: ':id/members',
             component: () => import('@/views/main/classes/Members')
           },
           {
             name: 'material',
-            path: 'material',
+            path: ':id/material',
             component: () => import('@/views/main/classes/Material')
+          },
+          {
+            name: 'assignments',
+            path: ':id/assignments',
+            component: () => import('@/views/main/classes/Assignments')
+          },
+          {
+            name: 'search',
+            path: ':id/search/:query',
+            component: () => import('@/views/main/classes/Search')
           }
         ]
       },
@@ -103,8 +119,29 @@ const routes = [
         name: 'profile',
         path: 'profile',
         component: () => import('@/views/main/Profile')
+      },
+      {
+        name: 'blog',
+        path: 'blog',
+        component: () => import('@/views/main/Blog')
+      },
+      {
+        name: 'people',
+        path: 'people',
+        component: () => import('@/views/main/People')
+      },
+      {
+        name: 'person',
+        path: 'people/:id',
+        component: () => import('@/views/main/Person')
       }
     ]
+  },
+  {
+    path: '*',
+    beforeEnter: (to, from, next) => {
+      next('/')
+    }
   }
 ]
 

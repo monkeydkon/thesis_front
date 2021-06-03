@@ -25,13 +25,25 @@ export default {
             const res = await axios.get(`${process.env.VUE_APP_BASE_URL}/api/courses`)
             console.log(res)
             commit('setClasses', res.data)
+
             localStorage.setItem('classes', JSON.stringify(res.data))
             commit('setSelectedClass')
-            router.push(`/classes/${state.selectedClass.id}/posts`)
+            console.log('SELECTED CLASS', state.setSelectedClass);
+            if (!!state.selectedClass) {
+                router.push(`/classes/${state.selectedClass.id}/posts`)
+            } else {
+                router.push(`/classes`)
+            }
         },
         selectClass({ commit, state }, id) {
             commit('setSelectedClass', id)
             router.push(`/classes/${state.selectedClass.id}/posts`)
+        },
+
+        async createClass({ dispatch }, credentials) {
+            await axios.post(`${process.env.VUE_APP_BASE_URL}/api/courses`, credentials)
+            dispatch('goToClasses')
+
         },
 
         teacherNewPost({ commit }, credentials) {
@@ -51,6 +63,58 @@ export default {
                     reject(err)
                 }
 
+            })
+        },
+
+        studentNewPost({ commit }, credentials) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const post = await axios.post(`${process.env.VUE_APP_BASE_URL}/api/courses/studentPosts`, credentials)
+
+                    const res = await axios.get(`${process.env.VUE_APP_BASE_URL}/api/courses`)
+
+                    commit('setClasses', res.data)
+                    localStorage.setItem('classes', JSON.stringify(res.data))
+
+                    resolve()
+                } catch (err) {
+                    reject(err)
+                }
+            })
+        },
+
+        newFile({ commit }, credentials) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const post = await axios.post(`${process.env.VUE_APP_BASE_URL}/api/courses/files`, credentials)
+
+                    const res = await axios.get(`${process.env.VUE_APP_BASE_URL}/api/courses`)
+
+                    commit('setClasses', res.data)
+                    localStorage.setItem('classes', JSON.stringify(res.data))
+
+                    resolve(post)
+                } catch (err) {
+                    reject(err)
+                }
+            })
+        },
+
+        newAssignment({ commit }, credentials) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    console.log("CREDA", credentials)
+                    const post = await axios.post(`${process.env.VUE_APP_BASE_URL}/api/courses/assignments`, credentials)
+
+                    const res = await axios.get(`${process.env.VUE_APP_BASE_URL}/api/courses`)
+
+                    commit('setClasses', res.data)
+                    localStorage.setItem('classes', JSON.stringify(res.data))
+
+                    resolve(post)
+                } catch (err) {
+                    reject(err)
+                }
             })
         }
     },

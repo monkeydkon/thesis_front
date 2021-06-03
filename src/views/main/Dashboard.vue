@@ -14,8 +14,14 @@
       </div>
     </div>
     <div class="d-flex">
-      <div class="box primary">todo</div>
-      <div class="box primary">todo</div>
+      <div class="box primary" @click="$router.push('/blog')">
+        <v-icon x-large class="white--text">mdi-post</v-icon>
+        <h3 class="white--text mt-2">My blog</h3>
+      </div>
+      <div class="box primary" @click="$router.push('/people')">
+        <v-icon x-large class="white--text">mdi-account-group</v-icon>
+        <h3 class="white--text mt-2">People</h3>
+      </div>
     </div>
   </div>
 </template>
@@ -23,11 +29,11 @@
 <script>
 export default {
   methods: {
-    classesClick(){
-      this.$store.dispatch('goToClasses')
-    }
-  }
-}
+    classesClick() {
+      this.$store.dispatch("goToClasses");
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

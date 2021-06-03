@@ -14,12 +14,14 @@
         <div class="d-flex flex-column">
           <p>{{ post.content }}</p>
 
-          <p v-if="student" class="mb-0">
+          <p v-if="student" class="mb-0 secondary--text">
               written by:
               <span class="primary--text">
-                  {{post.student.name}}
+                  {{post.user.firstName + ' ' + post.user.lastName}}
               </span>
           </p>
+
+          <p class="caption">Posted at: {{dateFormat(post.created_at)}}</p>
         </div>
       </v-card-text>
     </v-card>
@@ -27,7 +29,13 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   props: ["post", "student"],
+  methods: {
+    dateFormat(date){
+      return moment(date).local().format('DD/MM/YYYY HH:mm')
+    }
+  }
 };
 </script>

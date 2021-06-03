@@ -3,7 +3,8 @@ import router from '../router';
 import jwt_decode from "jwt-decode";
 export default {
     state: {
-        jwt: localStorage.getItem('jwt') || null
+        jwt: localStorage.getItem('jwt') || null,
+        profile: JSON.parse(localStorage.getItem('profile')) || null
     },
     getters: {
         isLoggedIn: state => !!state.jwt,
@@ -15,12 +16,15 @@ export default {
         },
         logout(state) {
             state.jwt = null;
+        },
+        profile(state, profile) {
+            state.profile = profile
+            localStorage.setItem('profile', JSON.stringify(profile))
         }
 
     },
     actions: {
         login({ commit, dispatch }, credentials) {
-            console.log('xaxa')
             return new Promise(async (resolve, reject) => {
                 try {
                     axios.post(`${process.env.VUE_APP_BASE_URL}/api/auth/login`, credentials)
@@ -29,8 +33,7 @@ export default {
                             localStorage.setItem('jwt', jwt)
                             axios.defaults.headers.common['Authorization'] = `Bearer ${jwt}`
                             commit('login', jwt)
-                            const me = await axios.post(`${process.env.VUE_APP_BASE_URL}/api/auth/me`)
-                            console.log("ME",me)
+                            await dispatch('getProfile')
                             resolve(res)
                         })
                         .catch(err => {
@@ -45,11 +48,47 @@ export default {
             })
         },
 
+        register({ }, credentials) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    axios.post(`${process.env.VUE_APP_BASE_URL}/api/auth/register`, credentials)
+                        .then(async res => {
+                            resolve(res)
+                        })
+                        .catch(err => {
+                            reject(err)
+                        })
+                } catch (err) {
+                    reject(err)
+                }
+            })
+        },
+
+        refresh({ commit }) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const refresh = await axios.post(`${process.env.VUE_APP_BASE_URL}/api/auth/refresh`)
+                    const jwt = refresh.data.access_token
+                    localStorage.setItem('jwt', jwt)
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${jwt}`
+                    commit('login', jwt)
+                    resolve()
+                } catch (err) {
+                    reject(err)
+                }
+            })
+        },
+
         logout({ commit }) {
             commit('logout')
             localStorage.removeItem('jwt')
             delete axios.defaults.headers.common['Authorization']
             router.push('/login')
+        },
+
+        async getProfile({ commit }) {
+            const me = await axios.post(`${process.env.VUE_APP_BASE_URL}/api/auth/me`)
+            commit('profile', me.data)
         },
 
         forgot({ }, email) {

@@ -7,6 +7,7 @@
       class="mb-10"
       rounded
       v-if="$store.getters.role.name == 'teacher'"
+      @click="newMemberDialog = true"
       >Add a new member..</v-btn
     >
     <div v-if="selectedClass.members.length > 0" class="">
@@ -18,15 +19,44 @@
       />
     </div>
     <p v-else>There are no members yet..</p>
+
+    <v-dialog v-model="newMemberDialog" width="500">
+      <v-card class="py-10">
+        <v-card-text>
+          <v-form
+            @submit.prevent="addMember"
+            class="d-flex flex-column align-center"
+          >
+            <h2 class="title primary--text text-center mb-10">
+              Add a new student to your class
+            </h2>
+            <v-text-field label="Email" v-model="email"></v-text-field>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import Member from "@/components/Member";
+import axios from 'axios'
 export default {
   components: {
     Member,
   },
+
+  data() {
+    return {
+      newMemberDialog: false,
+      email: null
+    };
+  },
+
+  methods: {
+    addMember() {},
+  },
+
   computed: {
     selectedClass() {
       return this.$store.state.course.classes.find(
@@ -34,5 +64,21 @@ export default {
       );
     },
   },
+
+  watch: {
+    email(v){
+      axios.get(`${process.env.VUE_APP_BASE_URL}/api/user/email`, {
+        params: {
+          email: v
+        }
+      })
+      .then(res => {
+        console.log(res)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }
+  }
 };
 </script>

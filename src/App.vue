@@ -5,15 +5,18 @@
     </v-app-bar>
     <v-main>
       <router-view ></router-view>
+       <Snackbar />
     </v-main>
   </v-app>
 </template>
 
 <script>
 import Header from '@/components/Header'
+import Snackbar from "@/components/Snackbar";
 export default {
   components: {
-    Header
+    Header,
+    Snackbar
   }
 }
 </script>

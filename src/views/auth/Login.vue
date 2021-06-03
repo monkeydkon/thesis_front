@@ -37,6 +37,11 @@
         @click="$router.push('/forgot')"
         >I forgot my password</a
       >
+
+      <p class="caption primary--text">
+        Dont have an account? Click
+        <a class="text-decoration-underline" @click="$router.push('/register')">here</a> to register.
+      </p>
     </v-form>
   </div>
 </template>
@@ -108,13 +113,13 @@ export default {
   },
 
   watch: {
-    email(val){
-      this.loginFailed = false
+    email(val) {
+      this.loginFailed = false;
     },
-    password(val){
-      this.loginFailed = false
-    }
-  }
+    password(val) {
+      this.loginFailed = false;
+    },
+  },
 };
 </script>
 
