@@ -11,15 +11,32 @@ export default {
     actions: {
         postBlog({ dispatch }, blog) {
             return new Promise((resolve, reject) => {
-                axios.post(`${process.env.VUE_APP_BASE_URL}/api/user/blogs`, blog)
+                axios.post(`${process.env.VUE_APP_BASE_URL}/api/user/blogs`, {
+                    title: blog.title,
+                    content: blog.content
+                })
                     .then(async res => {
-                        await dispatch('getBlogs')
-                        dispatch('showSnack', {
-                            text: 'Successfull submit',
-                            color: 'primary',
-                            value: true
-                        })
-                        resolve()
+                        try {
+                            if (!!blog.photo) {
+                                const formData = new FormData()
+                                formData.append('photo', blog.photo)
+                                await axios.post(`${process.env.VUE_APP_BASE_URL}/api/user/blogs/${res.data.id}/photo`, formData, {
+                                    headers: {
+                                        'content-type': 'multipart/form-data'
+                                    }
+                                })
+                            }
+                            await dispatch('getBlogs')
+                            dispatch('showSnack', {
+                                text: 'Successfull submit',
+                                color: 'primary',
+                                value: true
+                            })
+                            resolve()
+                        } catch (err) {
+                            reject(err)
+                        }
+
                     })
                     .catch(err => {
                         dispatch('showSnack', {

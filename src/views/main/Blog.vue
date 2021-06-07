@@ -28,6 +28,8 @@
         :error-messages="newBlogContentErrors"
       ></v-textarea>
 
+      <v-file-input accept="audio/*" v-model="photo" label="Photo"></v-file-input>
+
       <v-btn color="primary" width="200" type="submit" class="mb-10"
         >Submit</v-btn
       >
@@ -74,6 +76,7 @@ export default {
         title: null,
         content: null,
       },
+      photo: null
     };
   },
 
@@ -85,10 +88,10 @@ export default {
           .dispatch("postBlog", {
             title: this.newBlog.title,
             content: this.newBlog.content,
+            photo: this.photo
           })
           .then(() => {
             this.addingPost = false;
-            
           });
       }
     },
