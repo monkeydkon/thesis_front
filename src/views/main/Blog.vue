@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column align-center pt-12">
+  <div class="d-flex flex-column align-center pt-12 mb-10">
     <h1 class="display-2 primary--text">My blog</h1>
     <p class="subtitle mt-2 primary--text">
       Here you can see all your blog posts
@@ -15,22 +15,29 @@
     >
       <h2 class="subtitle primary--text">New Blog</h2>
       <v-text-field
-        class="mt-10"
+        class="mt-10 staticWidth"
         label="Title"
         v-model="newBlog.title"
         :error-messages="newBlogTitleErrors"
       ></v-text-field>
       <v-textarea
         outlined
-        class="mt-2"
+        class="mt-2 staticWidth"
         lang="Contect"
         v-model="newBlog.content"
         :error-messages="newBlogContentErrors"
       ></v-textarea>
 
-      <v-file-input accept="audio/*" v-model="photo" label="Photo"></v-file-input>
+      <v-file-input
+        accept="image/*"
+        class="staticWidth"
+        v-model="photo"
+        label="Photo"
+      ></v-file-input>
 
-      <v-btn color="primary" width="200" type="submit" class="mb-10"
+      <img class="image my-5" v-if="photo" :src="photoPreview" />
+
+      <v-btn color="primary" width="300" type="submit" class="mb-10"
         >Submit</v-btn
       >
     </v-form>
@@ -76,7 +83,7 @@ export default {
         title: null,
         content: null,
       },
-      photo: null
+      photo: null,
     };
   },
 
@@ -88,9 +95,36 @@ export default {
           .dispatch("postBlog", {
             title: this.newBlog.title,
             content: this.newBlog.content,
-            photo: this.photo
           })
-          .then(() => {
+          .then((res) => {
+            if (!!this.photo) {
+              console.log("PEOS", res)
+              const formData = new FormData();
+              formData.append("image", this.photo);
+
+              axios
+                .post(
+                  `${process.env.VUE_APP_BASE_URL}/api/user/blogs/${res.data.id}/image`,
+                  formData,
+                  {
+                    headers: {
+                      "content-type": "multipart/form-data",
+                    },
+                  }
+                )
+                .then(async () => {
+                  await this.$store.dispatch("getBlogs");
+                  this.addingPost = false;
+                })
+                .catch((err) => {
+                  this.addingPost = false;
+                });
+            }else{
+              console.log("NO PEOS")
+               this.$store.dispatch("getBlogs");
+            }
+          })
+          .catch((err) => {
             this.addingPost = false;
           });
       }
@@ -105,6 +139,10 @@ export default {
   },
 
   computed: {
+    photoPreview() {
+      if (!this.photo) return;
+      return URL.createObjectURL(this.photo);
+    },
     newBlogTitleErrors() {
       const errors = [];
       if (!this.$v.newBlog.title.$dirty) return errors;
@@ -136,5 +174,14 @@ export default {
   border: 3px solid var(--v-primary-base);
   padding: 10px 50px;
   margin: 40px;
+}
+
+.staticWidth {
+  width: 300px;
+}
+
+.image {
+  max-width: 400px;
+  border: 3px solid var(--v-secondary-base);
 }
 </style>

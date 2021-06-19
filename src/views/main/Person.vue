@@ -58,6 +58,14 @@
             {{ user.firstName + " " + user.lastName }}
           </p>
           <p class="mb-0 primary--text">{{ user.email }}</p>
+          
+        </div>
+         <div class="d-flex flex-column justify-center ml-10">
+          <p class="mb-0 primary--text">
+            {{ user.linkedin }}
+          </p>
+          <p class="mb-0 primary--text">{{ user.github }}</p>
+          
         </div>
       </div>
       <p class="mb-0 primary--text">{{ user.summary }}</p>

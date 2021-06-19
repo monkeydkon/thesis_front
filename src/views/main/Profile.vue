@@ -6,7 +6,7 @@
       class="d-flex flex-column align-center mt-12"
       @submit.prevent="submit"
     >
-     <v-hover v-slot="{ hover }">
+      <!-- <v-hover v-slot="{ hover }">
       <v-img
         alt="Profile image"
         id="image"
@@ -26,33 +26,55 @@
         </v-expand-transition></v-img
       >
         </v-hover>
+         -->
+      <img src="https://picsum.photos/id/11/500/300" id="image" alt="" />
+
+      <v-btn icon class="align-self-end">
+        <v-icon>mdi-image</v-icon>
+      </v-btn>
+
       <v-text-field
         label="E-mail"
+        class="staticWidth"
         :value="$store.state.auth.profile.email"
         readonly
       ></v-text-field>
       <v-text-field
         label="First name"
+        class="staticWidth"
         :value="$store.state.auth.profile.firstName"
         readonly
       ></v-text-field>
       <v-text-field
         label="Last name"
+        class="staticWidth"
         :value="$store.state.auth.profile.lastName"
         readonly
       ></v-text-field>
       <v-text-field
         label="LinkedIn"
+        class="staticWidth"
         v-model="linkedin"
         :error-messages="linkedinErrors"
       ></v-text-field>
       <v-text-field
         label="Github"
+        class="staticWidth"
         v-model="github"
         :error-messages="githubErrors"
       ></v-text-field>
-      <v-textarea label="Summary" outlined v-model="summary"></v-textarea>
-      <v-btn color="primary" width="200" type="submit" :loading="loading"
+      <v-textarea
+        class="staticWidth"
+        label="Summary"
+        outlined
+        v-model="summary"
+      ></v-textarea>
+      <v-btn
+        color="primary"
+        class="staticWidth"
+        width="200"
+        type="submit"
+        :loading="loading"
         >Save</v-btn
       >
     </v-form>
@@ -125,9 +147,12 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 250px;
-  width: 250px;
+  height: 300px;
+  width: 300px;
   border-radius: 50%;
   border: 4px solid var(--v-primary-base);
+}
+.staticWidth {
+  width: 300px;
 }
 </style>

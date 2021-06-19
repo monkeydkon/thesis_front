@@ -17,22 +17,22 @@ export default {
                 })
                     .then(async res => {
                         try {
-                            if (!!blog.photo) {
-                                const formData = new FormData()
-                                formData.append('photo', blog.photo)
-                                await axios.post(`${process.env.VUE_APP_BASE_URL}/api/user/blogs/${res.data.id}/photo`, formData, {
-                                    headers: {
-                                        'content-type': 'multipart/form-data'
-                                    }
-                                })
-                            }
-                            await dispatch('getBlogs')
+                            // if (!!blog.photo) {
+                            //     const formData = new FormData()
+                            //     formData.append('photo', blog.photo)
+                            //     await axios.post(`${process.env.VUE_APP_BASE_URL}/api/user/blogs/${res.data.id}/photo`, formData, {
+                            //         headers: {
+                            //             'content-type': 'multipart/form-data'
+                            //         }
+                            //     })
+                            // }
+                            
                             dispatch('showSnack', {
                                 text: 'Successfull submit',
                                 color: 'primary',
                                 value: true
                             })
-                            resolve()
+                            resolve(res)
                         } catch (err) {
                             reject(err)
                         }

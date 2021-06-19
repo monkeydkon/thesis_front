@@ -9,6 +9,11 @@ Vue.config.productionTip = false
 
 Vue.use(Vuelidate)
 
+// Vue.filter('reverse', function(value) {
+//   // slice to make a copy of array, then reverse the copy
+//   return value.slice().reverse();
+// });
+
 if (store.getters.isLoggedIn) {
   axios.defaults.headers.common["Authorization"] = `Bearer ${store.state.auth.jwt}`;
   // setTimeout(() => {

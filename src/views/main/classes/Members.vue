@@ -30,7 +30,24 @@
             <h2 class="title primary--text text-center mb-10">
               Add a new student to your class
             </h2>
-            <v-text-field label="Email" v-model="email"></v-text-field>
+            <v-autocomplete
+              label="Email"
+              clearable
+              :search-input.sync="email"
+              v-model="selectedUser"
+              :items="users"
+              item-text="email"
+              return-object
+            ></v-autocomplete>
+
+            <v-btn
+              :loading="addingUser"
+              color="primary"
+              class="mt-10"
+              :disabled="!selectedUser"
+              type="submit"
+              >Add user to class</v-btn
+            >
           </v-form>
         </v-card-text>
       </v-card>
@@ -40,7 +57,7 @@
 
 <script>
 import Member from "@/components/Member";
-import axios from 'axios'
+import axios from "axios";
 export default {
   components: {
     Member,
@@ -49,12 +66,30 @@ export default {
   data() {
     return {
       newMemberDialog: false,
-      email: null
+      email: null,
+      selectedUser: null,
+      users: [],
+      addingUser: false,
     };
   },
 
   methods: {
-    addMember() {},
+    addMember() {
+      console.log("lol");
+      axios
+        .post(
+          `${process.env.VUE_APP_BASE_URL}/api/courses/${this.$route.params.id}/addUser`,
+          {
+            user_id: this.selectedUser.id,
+          }
+        )
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
 
   computed: {
@@ -66,19 +101,21 @@ export default {
   },
 
   watch: {
-    email(v){
-      axios.get(`${process.env.VUE_APP_BASE_URL}/api/user/email`, {
-        params: {
-          email: v
-        }
-      })
-      .then(res => {
-        console.log(res)
-      })
-      .catch(err => {
-        console.log(err)
-      })
-    }
-  }
+    email(v) {
+      axios
+        .get(`${process.env.VUE_APP_BASE_URL}/api/user/email`, {
+          params: {
+            email: v,
+          },
+        })
+        .then((res) => {
+          this.users = res.data;
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+  },
 };
 </script>

@@ -55,6 +55,25 @@
             :disabled="$route.name == 'assignments'"
             >Assignments</v-btn
           >
+          <v-btn
+            rounded
+            color="grey lighten-2"
+            class="ml-4"
+            v-if="$store.getters.role.name == 'student'"
+            @click="$router.push({ path: 'chat/1' })"
+            :disabled="$route.name == 'chat'"
+            >Chat</v-btn
+          >
+
+          <v-btn
+            rounded
+            color="grey lighten-2"
+            class="ml-4"
+            v-else-if="$store.getters.role.name == 'teacher'"
+            @click="$router.push({ path: 'teacher-chat' })"
+            :disabled="$route.name == 'teacher-chat'"
+            >Chat</v-btn
+          >
           <!-- <v-btn rounded color="grey lighten-2" class="ml-4">Material</v-btn> -->
         </div>
 

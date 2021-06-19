@@ -112,6 +112,30 @@ const routes = [
             name: 'search',
             path: ':id/search/:query',
             component: () => import('@/views/main/classes/Search')
+          },
+          {
+            name: 'chat',
+            path: ':id/chat/:page',
+            component: () => import('@/views/main/classes/Chat'),
+            beforeEnter: (to, from, next) => {
+              if(store?.getters?.role?.name == 'teacher'){
+                next('/dashboard')
+              }else{
+                next()
+              }
+            }
+          },
+          {
+            name: 'teacher-chat',
+            path: ':id/teacher-chat',
+            component: () => import('@/views/main/classes/TeacherChat'),
+            beforeEnter: (to, from, next) => {
+              if(store?.getters?.role?.name == 'student'){
+                next('/dashboard')
+              }else{
+                next()
+              }
+            }
           }
         ]
       },
