@@ -11,12 +11,20 @@
       >Add a new member..</v-btn
     >
     <div v-if="selectedClass.members.length > 0" class="">
-      <Member
-        class="mt-1"
-        v-bind:student="member"
+      <div
         v-for="member in selectedClass.members"
         :key="member.id"
-      />
+        class="d-flex align-center"
+      >
+        <v-btn
+          icon
+          @click="removeMember(member.user.id)"
+          v-if="$store.getters.role.name == 'teacher'"
+        >
+          <v-icon color="red">mdi-delete</v-icon>
+        </v-btn>
+        <Member class="mt-1" v-bind:student="member" />
+      </div>
     </div>
     <p v-else>There are no members yet..</p>
 
@@ -76,19 +84,38 @@ export default {
   methods: {
     addMember() {
       console.log("lol");
-      axios
-        .post(
-          `${process.env.VUE_APP_BASE_URL}/api/courses/${this.$route.params.id}/addUser`,
-          {
-            user_id: this.selectedUser.id,
-          }
-        )
-        .then((res) => {
-          console.log(res);
+      // axios
+      //   .post(
+      //     `${process.env.VUE_APP_BASE_URL}/api/courses/${this.$route.params.id}/addUser`,
+      //     {
+      //       user_id: this.selectedUser.id,
+      //     }
+      //   )
+      //   .then((res) => {
+      //     console.log(res);
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
+      this.$store
+        .dispatch("addMemberToClass", {
+          course_id: this.$route.params.id,
+          user_id: this.selectedUser.id,
+        })
+        .then(() => {
+          this.newMemberDialog = false;
+          this.selectedUser = null;
         })
         .catch((err) => {
           console.log(err);
         });
+    },
+
+    removeMember(id) {
+      this.$store.dispatch("removeMemberFromClass", {
+        course_id: this.$route.params.id,
+        user_id: id,
+      });
     },
   },
 
@@ -102,19 +129,28 @@ export default {
 
   watch: {
     email(v) {
-      axios
-        .get(`${process.env.VUE_APP_BASE_URL}/api/user/email`, {
-          params: {
-            email: v,
-          },
-        })
-        .then((res) => {
-          this.users = res.data;
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      if (!!v) {
+        axios
+          .get(`${process.env.VUE_APP_BASE_URL}/api/user/email`, {
+            params: {
+              email: v,
+            },
+          })
+          .then((res) => {
+            this.users = res.data.filter((user) => {
+              if (
+                this.selectedClass.members.find((i) => i.user.id == user.id)
+              ) {
+                return false;
+              }
+              return true;
+            });
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     },
   },
 };

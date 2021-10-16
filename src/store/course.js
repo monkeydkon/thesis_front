@@ -83,6 +83,41 @@ export default {
             })
         },
 
+        addMemberToClass({ commit }, credentials) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    await axios
+                        .post(
+                            `${process.env.VUE_APP_BASE_URL}/api/courses/${credentials.course_id}/addUser`,
+                            {
+                                user_id: credentials.user_id,
+                            }
+                        );
+                    const res = await axios.get(`${process.env.VUE_APP_BASE_URL}/api/courses`)
+
+                    commit('setClasses', res.data)
+                    localStorage.setItem('classes', JSON.stringify(res.data))
+                    resolve()
+                } catch (err) {
+                    reject(err)
+                }
+            })
+        },
+
+        removeMemberFromClass({ commit }, credentials) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    await axios.delete(`${process.env.VUE_APP_BASE_URL}/api/courses/${credentials.course_id}/deleteUser/${credentials.user_id}`)
+                    const res = await axios.get(`${process.env.VUE_APP_BASE_URL}/api/courses`)
+
+                    commit('setClasses', res.data)
+                    localStorage.setItem('classes', JSON.stringify(res.data))
+                } catch (err) {
+                    reject(err)
+                }
+            });
+        },
+
         newFile({ commit }, credentials) {
             return new Promise(async (resolve, reject) => {
                 try {
@@ -103,7 +138,6 @@ export default {
         newAssignment({ commit }, credentials) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    console.log("CREDA", credentials)
                     const post = await axios.post(`${process.env.VUE_APP_BASE_URL}/api/courses/assignments`, credentials)
 
                     const res = await axios.get(`${process.env.VUE_APP_BASE_URL}/api/courses`)
@@ -112,6 +146,27 @@ export default {
                     localStorage.setItem('classes', JSON.stringify(res.data))
 
                     resolve(post)
+                } catch (err) {
+                    reject(err)
+                }
+            })
+        },
+
+        deletePost({ commit }, credentials) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    if (!credentials.student) {
+                        const del = await axios.delete(`${process.env.VUE_APP_BASE_URL}/api/courses/posts/${credentials.id}`)
+                    } else{
+                        const del = await axios.delete(`${process.env.VUE_APP_BASE_URL}/api/courses/studentPosts/${credentials.id}`)
+                    }
+
+                    const res = await axios.get(`${process.env.VUE_APP_BASE_URL}/api/courses`)
+
+                    commit('setClasses', res.data)
+                    localStorage.setItem('classes', JSON.stringify(res.data))
+
+                    resolve()
                 } catch (err) {
                     reject(err)
                 }
