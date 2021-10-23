@@ -23,12 +23,10 @@ export default {
     actions: {
         async goToClasses({ commit, state }) {
             const res = await axios.get(`${process.env.VUE_APP_BASE_URL}/api/courses`)
-            console.log(res)
             commit('setClasses', res.data)
 
             localStorage.setItem('classes', JSON.stringify(res.data))
             commit('setSelectedClass')
-            console.log('SELECTED CLASS', state.setSelectedClass);
             if (!!state.selectedClass) {
                 router.push(`/classes/${state.selectedClass.id}/posts`)
             } else {
@@ -51,10 +49,8 @@ export default {
                 try {
                     const post = await axios.post(`${process.env.VUE_APP_BASE_URL}/api/courses/posts`, credentials)
 
-                    console.log("PPOST", post)
 
                     const res = await axios.get(`${process.env.VUE_APP_BASE_URL}/api/courses`)
-                    console.log(res)
                     commit('setClasses', res.data)
                     localStorage.setItem('classes', JSON.stringify(res.data))
 

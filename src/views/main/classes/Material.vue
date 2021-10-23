@@ -80,7 +80,6 @@ export default {
   },
   methods: {
     download(item) {
-      //console.log(item);
       axios
         .get(`${process.env.VUE_APP_BASE_URL}/api/courses/files/${item.id}`, { responseType: "blob" })
         .then((res) => {

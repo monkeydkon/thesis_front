@@ -143,7 +143,6 @@ export default {
         .then((res) => {
           this.loading = false;
           this.user = res.data;
-          console.log(res);
         })
         .catch((err) => {
           this.loading = false;
@@ -159,7 +158,6 @@ export default {
         )
         .then((res) => {
           this.following = res.data == 1 ? true : false;
-          console.log(res);
         })
         .catch((err) => {
           console.log(err);
@@ -176,7 +174,6 @@ export default {
         .then(async (res) => {
           await this.getFollowStatus();
           this.loading = false;
-          console.log(res);
         })
         .catch((err) => {
           this.loading = false;

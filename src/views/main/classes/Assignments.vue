@@ -28,10 +28,7 @@
     <v-dialog v-model="newAssignmentDialog" width="400">
       <v-card class="py-10">
         <v-card-text>
-          <v-form
-            @submit.prevent="submit"
-            class="d-flex flex-column align-center"
-          >
+          <v-form @submit.prevent="submit" class="d-flex flex-column align-center">
             <h2 class="title primary--text">New Assignment</h2>
 
             <v-text-field
@@ -80,6 +77,8 @@
               >Add</v-btn
             >
           </v-form>
+
+          {{ newAssignment.file }}
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -124,10 +123,9 @@ export default {
   methods: {
     download(item) {
       axios
-        .get(
-          `${process.env.VUE_APP_BASE_URL}/api/courses/assignments/${item.id}/file`,
-          { responseType: "blob" }
-        )
+        .get(`${process.env.VUE_APP_BASE_URL}/api/courses/assignments/${item.id}/file`, {
+          responseType: "blob",
+        })
         .then((res) => {
           const fileURL = window.URL.createObjectURL(new Blob([res.data]));
           var fileLink = document.createElement("a");
@@ -157,19 +155,20 @@ export default {
         formData.append("title", this.newAssignment.title);
         formData.append("description", this.newAssignment.description);
         formData.append("end_date", this.newAssignment.end_date);
-        formData.append(
-          "file",
-          this.newAssignment.file,
-          this.newAssignment.file.name
-        );
+        if (!!this.newAssignment.file) {
+          formData.append("file", this.newAssignment.file, this.newAssignment.file.name);
+        }
+
         formData.append("course_id", this.$route.params.id);
         this.$store
           .dispatch("newAssignment", formData)
           .then(() => {
             this.newAssignmentLoading = false;
+            this.newAssignmentDialog = false;
           })
           .catch((err) => {
             this.newAssignmentLoading = false;
+            this.newAssignmentDialog = false;
           });
       }
     },
@@ -196,14 +195,11 @@ export default {
     endDateErrors() {
       const errors = [];
       if (!this.$v.newAssignment.end_date.$dirty) return errors;
-      if (!this.$v.newAssignment.end_date.required)
-        errors.push("Required field");
+      if (!this.$v.newAssignment.end_date.required) errors.push("Required field");
       return errors;
     },
     selectedClass() {
-      return this.$store.state.course.classes.find(
-        (c) => c.id == this.$route.params.id
-      );
+      return this.$store.state.course.classes.find((c) => c.id == this.$route.params.id);
     },
   },
 

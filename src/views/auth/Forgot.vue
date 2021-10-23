@@ -43,7 +43,6 @@ export default {
       this.$v.$touch();
       if (!this.$v.$invalid) {
         this.forgot(this.email).then((res) => {
-          console.log(res);
         });
       }
     },

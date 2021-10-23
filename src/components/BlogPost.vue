@@ -7,14 +7,28 @@
       class="d-flex flex-column px-10 py-2"
     >
       <v-card-title>
-        <div class="d-flex justify-center">
+        <div class="d-flex justify-space-between flex-grow-1">
           <h1 class="title text-center">{{ blog.title }}</h1>
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                v-on="on"
+                icon
+                v-if="$store.state.auth.profile.id == blog.user_id"
+                @click="deletePost(blog.id)"
+              >
+                <v-icon color="red">mdi-delete</v-icon></v-btn
+              >
+              <v-btn
+            </template>
+            <span>Delete post</span>
+          </v-tooltip>
         </div>
       </v-card-title>
 
       <v-card-text>
         <div class="d-flex flex-column">
-
           <img class="image" :src="image(blog)" v-if="!!blog.img_path" />
 
           <p class="mt-5">
@@ -33,8 +47,7 @@
             outlined
             color="primary"
             @click="comments = !comments"
-            ><span v-if="!comments">Show</span
-            ><span v-else>Hide</span> comments</v-btn
+            ><span v-if="!comments">Show</span><span v-else>Hide</span> comments</v-btn
           >
 
           <div class="d-flex flex-column align-start mt-10" v-if="comments">
@@ -106,38 +119,33 @@ export default {
     },
 
     image(blog) {
-      if(!!!blog.img_path) return ''
-      return `${process.env.VUE_APP_BASE_URL}/api/blogs/${blog.id}/image`
-    //   console.log(`${process.env.VUE_APP_BASE_URL}/api/user/blogs/${blog.id}/image`)
-    //  return `${process.env.VUE_APP_BASE_URL}/api/user/blogs/${blog.id}/image`
-      if(!blog.img_path) return
+      if (!!!blog.img_path) return "";
+      return `${process.env.VUE_APP_BASE_URL}/api/blogs/${blog.id}/image`;
+      //   console.log(`${process.env.VUE_APP_BASE_URL}/api/user/blogs/${blog.id}/image`)
+      //  return `${process.env.VUE_APP_BASE_URL}/api/user/blogs/${blog.id}/image`
+      if (!blog.img_path) return;
       axios
         .get(`${process.env.VUE_APP_BASE_URL}/api/user/blogs/${blog.id}/image`, {
-          responseType: 'blob'
+          responseType: "blob",
         })
         .then((res) => {
-          console.log(res)
-     //     console.log(window.URL.createObjectURL(new Blob([res.data])))
-        //  return res.data
+          //     console.log(window.URL.createObjectURL(new Blob([res.data])))
+          //  return res.data
           return window.URL.createObjectURL(new Blob([res.data]));
         })
-        .catch(err => {
-          console.log(err)
-          return ''
-        })
+        .catch((err) => {
+          console.log(err);
+          return "";
+        });
     },
 
     add(id) {
       this.$v.$touch();
       if (!this.$v.$invalid) {
-        console.log("valid");
         axios
-          .post(
-            `${process.env.VUE_APP_BASE_URL}/api/user/blogs/${id}/comment`,
-            {
-              comment: this.comment,
-            }
-          )
+          .post(`${process.env.VUE_APP_BASE_URL}/api/user/blogs/${id}/comment`, {
+            comment: this.comment,
+          })
           .then((res) => {
             this.blog.comments.push(res.data);
             this.$store.dispatch("showSnack", {
@@ -147,12 +155,22 @@ export default {
             });
             this.$v.$reset();
             this.comment = null;
-            console.log(res);
           })
           .catch((err) => {
             console.log(err);
           });
       }
+    },
+    deletePost(id) {
+      axios
+        .delete(`${process.env.VUE_APP_BASE_URL}/api/user/blogs/${id}`)
+        .then((res) => {
+          console.log(res);
+          this.$store.dispatch("getBlogs");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     deleteComment(blog_id, comment_id) {
       axios
@@ -169,7 +187,6 @@ export default {
             color: "primary",
             value: true,
           });
-          console.log(res);
         })
         .catch((err) => {
           console.log(err);
@@ -197,7 +214,7 @@ export default {
   border: 3px solid var(--v-secondary-base);
 }
 
-.image{
+.image {
   max-width: 500px;
   border: 1px solid var(--v-secondary-base);
 }

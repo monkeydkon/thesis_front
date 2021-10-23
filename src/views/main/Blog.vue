@@ -98,7 +98,6 @@ export default {
           })
           .then((res) => {
             if (!!this.photo) {
-              console.log("PEOS", res)
               const formData = new FormData();
               formData.append("image", this.photo);
 
@@ -120,7 +119,7 @@ export default {
                   this.addingPost = false;
                 });
             }else{
-              console.log("NO PEOS")
+               this.addingPost = false;
                this.$store.dispatch("getBlogs");
             }
           })

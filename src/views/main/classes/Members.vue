@@ -83,7 +83,6 @@ export default {
 
   methods: {
     addMember() {
-      console.log("lol");
       // axios
       //   .post(
       //     `${process.env.VUE_APP_BASE_URL}/api/courses/${this.$route.params.id}/addUser`,

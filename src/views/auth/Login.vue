@@ -83,7 +83,6 @@ export default {
           .catch((err) => {
             this.loginFailed = true;
             this.loading = false;
-            console.log(err);
           });
       }
     },

@@ -108,12 +108,10 @@ export default {
         .then((res) => {
           this.getChat();
           this.message = null;
-          console.log(res);
         })
         .catch((err) => {
           console.log(err);
         });
-      //  console.log(this.chat)
     },
   },
 

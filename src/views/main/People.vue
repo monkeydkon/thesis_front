@@ -70,7 +70,6 @@ export default {
         .then((res) => {
           this.following = res.data;
           this.loading = false;
-          console.log(res);
         })
         .catch((err) => {
           this.loading = false;
@@ -89,7 +88,6 @@ export default {
         .then((res) => {
           this.teachers = res.data;
           this.loading = false;
-          console.log(res);
         })
         .catch((err) => {
           this.loading = false;

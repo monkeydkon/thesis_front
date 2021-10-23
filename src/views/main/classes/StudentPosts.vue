@@ -17,7 +17,7 @@ results.posts<template>
         <Post v-bind:post="post" v-bind:student="true" />
       </div>
     </div>
-    <p v-else>No posts yet...</p>
+    <p v-else class="mt-2">No posts yet...</p>
 
     <v-dialog v-model="newPostDialog" width="500">
       <v-card class="pa-5">
