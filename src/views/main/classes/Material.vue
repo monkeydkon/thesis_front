@@ -83,6 +83,7 @@ export default {
       axios
         .get(`${process.env.VUE_APP_BASE_URL}/api/courses/files/${item.id}`, { responseType: "blob" })
         .then((res) => {
+          console.log(res)
           const fileURL = window.URL.createObjectURL(new Blob([res.data]));
           var fileLink = document.createElement("a");
 

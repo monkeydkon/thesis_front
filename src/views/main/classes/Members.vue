@@ -46,6 +46,7 @@
               :items="users"
               item-text="email"
               return-object
+              no-filter
             ></v-autocomplete>
 
             <v-btn

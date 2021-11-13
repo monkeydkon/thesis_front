@@ -20,7 +20,6 @@
               >
                 <v-icon color="red">mdi-delete</v-icon></v-btn
               >
-              <v-btn
             </template>
             <span>Delete post</span>
           </v-tooltip>
