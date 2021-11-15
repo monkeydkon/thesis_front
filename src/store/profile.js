@@ -23,6 +23,23 @@ export default {
                     })
             })
 
+        },
+
+        updateProfilePicture({ dispatch }, formData) {
+            return new Promise((resolve, reject) => {
+                axios.post(`${process.env.VUE_APP_BASE_URL}/api/user/profile/image`, formData, {
+                    headers: {
+                      "content-type": "multipart/form-data",
+                    }
+                })
+                    .then(async res => {
+                        await dispatch('getProfile')
+                        resolve()
+                    })
+                    .catch(err => {
+                        reject()
+                    })
+            })
         }
     }
 }

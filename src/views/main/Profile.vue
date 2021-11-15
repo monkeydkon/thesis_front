@@ -6,28 +6,50 @@
       class="d-flex flex-column align-center mt-12"
       @submit.prevent="submit"
     >
-      <!-- <v-hover v-slot="{ hover }">
-      <v-img
-        alt="Profile image"
-        id="image"
-        src="https://picsum.photos/id/11/500/300"
-      >
-        <v-expand-transition>
-          <div  class="red flex-grow-1" style="height:100%;">
-                <v-btn
-            v-if="hover"
-            class="d-flex transition-fast-in-fast-out "
+      <v-hover v-slot="{ hover }">
+        <v-img alt="Profile image" id="image" :src="url">
+          <v-expand-transition>
+            <div
+              v-if="hover"
+              class="insideImage d-flex justify-center align-center"
+            >
+              <!-- <v-btn >
+                text
+              </v-btn> -->
+              <p
+                v-if="!changedImage"
+                style="z-index: 2"
+                class="white--text mb-0"
+                @click="$refs.file.click()"
+              >
+                Change Profile Picture
+              </p>
+              <v-btn
+                v-else
+                style="z-index: 21"
+                icon
+                @click="
+                  url = $store.state.auth.profile.img_path;
+                  changedImage = false;
+                "
+              >
+                <v-icon color="white">mdi-delete</v-icon>
+              </v-btn>
+            </div>
+          </v-expand-transition></v-img
+        >
+      </v-hover>
 
-          >
-            text
-          </v-btn>
-          </div>
-      
-        </v-expand-transition></v-img
-      >
-        </v-hover>
-         -->
-      <img src="https://picsum.photos/id/11/500/300" id="image" alt="" />
+      <!-- <img :src="url" id="image" alt="" /> -->
+
+      <input
+        style="display: none"
+        id="file"
+        type="file"
+        ref="file"
+        @change="previewImage"
+        accept="image/*"
+      />
 
       <v-btn icon class="align-self-end">
         <v-icon>mdi-image</v-icon>
@@ -88,10 +110,13 @@ export default {
     this.summary = this.$store.state.auth.profile.summary;
     this.linkedin = this.$store.state.auth.profile.linkedin;
     this.github = this.$store.state.auth.profile.github;
+    this.url =  `${process.env.VUE_APP_BASE_URL}/api/user/${this.$store.state.auth.profile.id}/image` //this.$store.state.auth.profile.img_path;
   },
 
   data() {
     return {
+      changedImage: false,
+      url: null,
       summary: null,
       linkedin: null,
       github: null,
@@ -100,6 +125,25 @@ export default {
   },
 
   methods: {
+    previewImage: function (event) {
+      // Reference to the DOM input element
+      var input = event.target;
+      console.log(input.files);
+      // Ensure that you have a file before attempting to read it
+      if (input.files && input.files[0]) {
+        // create a new FileReader to read this image and convert to base64 format
+        var reader = new FileReader();
+        // Define a callback function to run, when FileReader finishes its job
+        reader.onload = (e) => {
+          // Note: arrow function used here, so that "this.imageData" refers to the imageData of Vue component
+          // Read image as base64 and set to imageData
+          this.url = e.target.result;
+          this.changedImage = true;
+        };
+        // Start the reader job - read file as a data url (base64 format)
+        reader.readAsDataURL(input.files[0]);
+      }
+    },
     submit() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
@@ -109,6 +153,18 @@ export default {
             summary: this.summary,
             github: this.github,
             linkedin: this.linkedin,
+          })
+          .then(() => {
+            console.log("CHAGE", this.changedImage);
+            if (this.changedImage) {
+              const formData = new FormData();
+              const image = document.querySelector("#file");
+              formData.append("image", image.files[0]);
+
+              return this.$store.dispatch("updateProfilePicture", formData);
+            } else {
+              this.loading = false;
+            }
           })
           .then(() => {
             this.loading = false;
@@ -151,6 +207,14 @@ export default {
   width: 300px;
   border-radius: 50%;
   border: 4px solid var(--v-primary-base);
+}
+
+.insideImage {
+  height: 300px;
+  width: 300px;
+  border-radius: 50%;
+  background-color: var(--v-primary-base);
+  opacity: 0.4;
 }
 .staticWidth {
   width: 300px;
