@@ -7,7 +7,7 @@
     
       <h1 class="display-2 primary--text">Login</h1>
       <p class="caption primary--text mt-2">
-        ddto dsee your classes and connect with people
+        ddto see your classes and connect with people
       </p>
       <v-text-field
         v-model="email"
