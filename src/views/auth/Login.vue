@@ -5,7 +5,7 @@
       class="mt-12 d-flex flex-column align-center form"
     >
     
-      <h1 class="display-2 primary--text">Logidddn</h1>
+      <h1 class="display-2 primary--text">Login</h1>
       <p class="caption primary--text mt-2">
         to see your classes and connect with people
       </p>
