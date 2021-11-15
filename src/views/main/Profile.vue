@@ -51,9 +51,9 @@
         accept="image/*"
       />
 
-      <v-btn icon class="align-self-end">
+      <!-- <v-btn icon class="align-self-end">
         <v-icon>mdi-image</v-icon>
-      </v-btn>
+      </v-btn> -->
 
       <v-text-field
         label="E-mail"
