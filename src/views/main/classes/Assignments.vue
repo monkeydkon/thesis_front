@@ -48,6 +48,7 @@
             <v-file-input
               label="File"
               chips
+              :error-messages="fileErrors"
               class="staticWidth"
               v-model="newAssignment.file"
             ></v-file-input>
@@ -190,6 +191,7 @@ export default {
     newAssignment: {
       title: { required },
       end_date: { required },
+      file: { required },
     },
   },
 
@@ -209,6 +211,12 @@ export default {
       if (!this.$v.newAssignment.end_date.$dirty) return errors;
       if (!this.$v.newAssignment.end_date.required)
         errors.push("Required field");
+      return errors;
+    },
+    fileErrors() {
+      const errors = [];
+      if (!this.$v.newAssignment.file.$dirty) return errors;
+      if (!this.$v.newAssignment.file.required) errors.push("Required field");
       return errors;
     },
     selectedClass() {
