@@ -20,6 +20,21 @@
               </template>
               <span>Download file</span>
             </v-tooltip>
+
+              <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                v-if="$store.getters.role.name == 'teacher'"
+                v-bind="attrs"
+                v-on="on"
+                icon
+                @click="deleteAssignment(item)"
+              >
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </template>
+            <span>Delete</span>
+          </v-tooltip>
           </div>
         </template>
       </v-data-table>
@@ -145,6 +160,10 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+     deleteAssignment(item) {
+      console.log(item);
+      this.$store.dispatch("deleteAssignment", item.id);
     },
     submit() {
       this.$v.newAssignment.$touch();

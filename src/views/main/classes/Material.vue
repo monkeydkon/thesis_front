@@ -22,7 +22,13 @@
 
           <v-tooltip right>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn v-if="$store.getters.role.name == 'teacher'" v-bind="attrs" v-on="on" icon @click="deleteFile(item)">
+              <v-btn
+                v-if="$store.getters.role.name == 'teacher'"
+                v-bind="attrs"
+                v-on="on"
+                icon
+                @click="deleteFile(item)"
+              >
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </template>
@@ -81,9 +87,11 @@ export default {
   methods: {
     download(item) {
       axios
-        .get(`${process.env.VUE_APP_BASE_URL}/api/courses/files/${item.id}`, { responseType: "blob" })
+        .get(`${process.env.VUE_APP_BASE_URL}/api/courses/files/${item.id}`, {
+          responseType: "blob",
+        })
         .then((res) => {
-          console.log(res)
+          console.log(res);
           const fileURL = window.URL.createObjectURL(new Blob([res.data]));
           var fileLink = document.createElement("a");
 
@@ -99,6 +107,7 @@ export default {
     },
     deleteFile(item) {
       console.log(item);
+      this.$store.dispatch("deleteFile", item.id);
     },
 
     uploadFile() {

@@ -131,6 +131,40 @@ export default {
             })
         },
 
+        deleteFile({ commit }, id) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const del = await axios.delete(`${process.env.VUE_APP_BASE_URL}/api/courses/files/${id}`)
+                    const res = await axios.get(`${process.env.VUE_APP_BASE_URL}/api/courses`)
+
+                    commit('setClasses', res.data)
+                    localStorage.setItem('classes', JSON.stringify(res.data))
+
+                    resolve(del)
+                }
+                catch (err) {
+                    reject(err)
+                }
+            })
+        },
+
+        deleteAssignment({ commit }, id) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const del = await axios.delete(`${process.env.VUE_APP_BASE_URL}/api/courses/assignments/${id}`)
+                    const res = await axios.get(`${process.env.VUE_APP_BASE_URL}/api/courses`)
+
+                    commit('setClasses', res.data)
+                    localStorage.setItem('classes', JSON.stringify(res.data))
+
+                    resolve(del)
+                }
+                catch (err) {
+                    reject(err)
+                }
+            })
+        },
+
         newAssignment({ commit }, credentials) {
             return new Promise(async (resolve, reject) => {
                 try {
@@ -153,7 +187,7 @@ export default {
                 try {
                     if (!credentials.student) {
                         const del = await axios.delete(`${process.env.VUE_APP_BASE_URL}/api/courses/posts/${credentials.id}`)
-                    } else{
+                    } else {
                         const del = await axios.delete(`${process.env.VUE_APP_BASE_URL}/api/courses/studentPosts/${credentials.id}`)
                     }
 
