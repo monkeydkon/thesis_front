@@ -106,6 +106,15 @@
 import moment from "moment";
 import axios from "axios";
 import { required } from "vuelidate/lib/validators";
+
+const file_size_validation = (value, vm) =>  {
+  if (!value) {
+    return true;
+  }
+  let file = value;
+  return (file.size < 2097152);
+};
+
 export default {
   data() {
     return {
@@ -210,7 +219,7 @@ export default {
     newAssignment: {
       title: { required },
       end_date: { required },
-      file: { required },
+      file: { required ,file_size_validation},
     },
   },
 
@@ -236,6 +245,7 @@ export default {
       const errors = [];
       if (!this.$v.newAssignment.file.$dirty) return errors;
       if (!this.$v.newAssignment.file.required) errors.push("Required field");
+       if (!this.$v.newAssignment.file.file_size_validation) errors.push("2MB maximum file size");
       return errors;
     },
     selectedClass() {

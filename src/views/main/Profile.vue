@@ -105,6 +105,13 @@
 
 <script>
 import { url } from "vuelidate/lib/validators";
+const file_size_validation = (value, vm) =>  {
+  if (!value) {
+    return true;
+  }
+  let file = value;
+  return (file.size < 2097152);
+};
 export default {
   created() {
     this.summary = this.$store.state.auth.profile.summary;
@@ -131,6 +138,14 @@ export default {
       console.log(input.files);
       // Ensure that you have a file before attempting to read it
       if (input.files && input.files[0]) {
+        if(input.files[0].size >= 2097152){
+           this.$store.dispatch("showSnack", {
+              text: "Must be maximum 2MB",
+              color: "red",
+              value: true,
+            });
+          return
+        }
         // create a new FileReader to read this image and convert to base64 format
         var reader = new FileReader();
         // Define a callback function to run, when FileReader finishes its job

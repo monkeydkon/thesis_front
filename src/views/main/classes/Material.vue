@@ -66,6 +66,14 @@
 <script>
 import { required } from "vuelidate/lib/validators";
 import axios from "axios";
+
+const file_size_validation = (value, vm) =>  {
+  if (!value) {
+    return true;
+  }
+  let file = value;
+  return (file.size < 2097152);
+};
 export default {
   data() {
     return {
@@ -134,13 +142,15 @@ export default {
     },
   },
   validations: {
-    file: { required },
+    file: { required ,file_size_validation},
   },
   computed: {
     fileErrors() {
       const errors = [];
       if (!this.$v.file.$dirty) return errors;
       if (!this.$v.file.required) errors.push("Required");
+        if (!this.$v.file.required) errors.push("Required field");
+       if (!this.$v.file.file_size_validation) errors.push("2MB maximum file size");
       return errors;
     },
     selectedClass() {

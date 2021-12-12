@@ -10,7 +10,7 @@ export default {
   created() {
     this.interval = setInterval(() => {
       this.$store.dispatch("refresh");
-    }, 1000 * 60);
+    }, 100 * 60);
   },
 
   data() {
