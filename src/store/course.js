@@ -3,7 +3,8 @@ import router from '../router'
 
 export default {
     state: {
-        classes: JSON.parse(localStorage.getItem('classes')) || []
+        classes: JSON.parse(localStorage.getItem('classes')) || [],
+        selectedClass: null
     },
     getters: {
         selectedClass: (state) => state.selectedClass
@@ -176,6 +177,26 @@ export default {
                     localStorage.setItem('classes', JSON.stringify(res.data))
 
                     resolve(post)
+                } catch (err) {
+                    reject(err)
+                }
+            })
+        },
+
+        submitAssignment({ commit }, credentials) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const post = await axios.post(`${process.env.VUE_APP_BASE_URL}/api/courses/assignments/submit`, credentials, {
+                        headers: { "Content-Type": "multipart/form-data" }
+                    })
+
+                     const res = await axios.get(`${process.env.VUE_APP_BASE_URL}/api/courses`)
+
+                     commit('setClasses', res.data)
+                     localStorage.setItem('classes', JSON.stringify(res.data))
+                    
+                     resolve()
+
                 } catch (err) {
                     reject(err)
                 }
